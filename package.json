@@ -11,9 +11,11 @@
   "license": "ISC",
   "dependencies": {
     "@elastic/elasticsearch": "^8.17.0",
+    "@faker-js/faker": "^9.5.0",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
+    "faker": "^6.6.6",
     "mongoose": "^8.10.1"
   }
 }

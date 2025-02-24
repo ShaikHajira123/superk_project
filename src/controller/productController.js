@@ -95,11 +95,30 @@ exports.getProductDetails = async (req, res) => {
     const { sku, storeId } = req.params;
 
     try {
-        const product = await Product.findOne({ sku, store_id: storeId });
-        if (!product) return res.status(404).json({ message: 'Product not found' });
+        const response = await client.search({
+            index: 'store_catalog',
+            body: {
+                query: {
+                    bool: {
+                        must: [
+                            { term: { "sku.keyword": sku } },
+                            { term: { "store_id.keyword": storeId } }
+                        ]
+                    }
+                }
+            }
+        });
 
-        res.json(product);
+        if (response.hits.total.value === 0) {
+            return res.status(404).json({ message: "Product not found" });
+        }
+
+        // Return the product from ElasticSearch
+        res.json(response.hits.hits[0]._source);
+
     } catch (error) {
+        console.error("Error fetching product details:", error);
         res.status(500).json({ message: error.message });
     }
 };
+
